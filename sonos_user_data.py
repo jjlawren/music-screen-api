@@ -65,35 +65,35 @@ def current(sonos_room):
     if uri.startswith('x-sonosapi-radio:sonos'):
         type_playing = "sonos_radio"
 
-    if type_playing == "radio":
-            
-        if 'stationName' in obj['currentTrack']:
-            # if Sonos has given us a nice station name then use that
-            current_trackname = obj['currentTrack']['stationName']
-        else:
-            # if not then try to look it up (usually because its played from Alexa)
-            current_trackname = str(find_unknown_radio_station_name(obj['currentTrack']['title']))
-        
-        current_artist = ""
-        current_album = ""
-        
-        if 'absoluteAlbumArtUri' in obj['currentTrack']:
-            current_image = obj['currentTrack']['absoluteAlbumArtUri']
-        else:
-            current_image = ""       
+#    if type_playing == "radio":
+#            
+#        if 'stationName' in obj['currentTrack']:
+#            # if Sonos has given us a nice station name then use that
+#            current_trackname = obj['currentTrack']['stationName']
+#        else:
+#            # if not then try to look it up (usually because its played from Alexa)
+#            current_trackname = str(find_unknown_radio_station_name(obj['currentTrack']['title']))
+#        
+#        current_artist = ""
+#        current_album = ""
+#        
+#        if 'absoluteAlbumArtUri' in obj['currentTrack']:
+#            current_image = obj['currentTrack']['absoluteAlbumArtUri']
+#        else:
+#            current_image = ""       
+#
+#    if type_playing != "radio":
+    try:
+        current_trackname = obj['currentTrack']['title']
+    except:
+        return "", "", "", "", "API error"
+    if 'artist' in obj['currentTrack']: current_artist = obj['currentTrack']['artist']
+    if 'album' in obj['currentTrack']: current_album = obj['currentTrack']['album']
 
-    if type_playing != "radio":
-        try:
-            current_trackname = obj['currentTrack']['title']
-        except:
-            return "", "", "", "", "API error"
-        if 'artist' in obj['currentTrack']: current_artist = obj['currentTrack']['artist']
-        if 'album' in obj['currentTrack']: current_album = obj['currentTrack']['album']
-
-        album_art_uri = obj['currentTrack'].get('albumArtUri')
-        if album_art_uri and album_art_uri.startswith('http'):
-            current_image = album_art_uri
-        elif 'absoluteAlbumArtUri' in obj['currentTrack']:
-            current_image = obj['currentTrack']['absoluteAlbumArtUri']
+    album_art_uri = obj['currentTrack'].get('albumArtUri')
+    if album_art_uri and album_art_uri.startswith('http'):
+        current_image = album_art_uri
+    elif 'absoluteAlbumArtUri' in obj['currentTrack']:
+        current_image = obj['currentTrack']['absoluteAlbumArtUri']
 
     return current_trackname, current_artist, current_album, current_image, playing_status
